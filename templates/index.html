@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Transcodeur Vidéos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+</head>
+<body>
+<div class="container">
+    <div class="top-buttons">
+        <button class="btn" id="RefreshButton" onclick="refreshPage()">Refresh</button>
+        <button class="btn">Transcode All</button>
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Taille</th>
+            <th>Durée</th>
+            <th>Progression</th>
+            <th>Status</th>
+            <th>Time Left</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for video in videos %}
+        <tr>
+            <td>{{ video.name }}</td>
+            <td>{{ video.size }} Go</td>
+            <td>{{ video.duration }}</td>
+            <td>
+                <progress class="progress-bar" id="progress-{{ video.hash }}" data-hash="{{ video.hash }}" value="0" max="100"></progress>
+            </td>
+            <td><p class="State" id="state-{{ video.hash }}" data-hash="{{ video.hash }}"></p></td>
+            <td>
+                <p class="TimeRemaining" id="time-{{ video.hash }}" data-hash="{{ video.hash }}"></p>
+            <td>
+                <button class="btn" onclick="startTranscode('{{ video.hash }}')">Transcode</button>
+            </td>
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
