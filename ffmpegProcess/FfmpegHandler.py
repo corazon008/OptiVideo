@@ -1,5 +1,4 @@
-import datetime
-from datetime import timedelta
+import datetime, time
 
 from ffmpeg import FFmpeg, Progress
 
@@ -20,14 +19,14 @@ class FfmpegHandler:
                 self.video.getOutputPath(),
                 {"codec:v": "libx265", "codec:a": "aac", "b:a": "128k"},
                 preset="medium",
-                vf="scale=-2:1080",
+                #vf="scale=-2:1080", # disable to keep original resolution
                 crf=25,
             )
         )
 
         self.speed = -1
         self._progress: float = 0
-        self._elapsed_time: datetime.timedelta = datetime.timedelta(seconds=0)
+
         self._time_remaining: datetime.timedelta = datetime.timedelta(seconds=0)
         self._state: FfmpegState = FfmpegState.NOT_STARTED
 
@@ -44,9 +43,11 @@ class FfmpegHandler:
     def start(self):
         self._state = FfmpegState.IN_PROGRESS
         print(f"{self.video.name} transcoding started")
+        self.started_time = time.time()
         self.ffmpeg.execute()
         self._state = FfmpegState.COMPLETED
         print(f"{self.video.name} transcoding completed")
+        self.finished_time = time.time()
 
     def getProgress(self) -> float:
         return self._progress
@@ -58,7 +59,7 @@ class FfmpegHandler:
         if self.speed == 0:
             return "Error"
         if self._time_remaining == 0:
-            return self._elapsed_time
+            return  datetime.timedelta(int(self.finished_time - self.started_time))
         return self._time_remaining
 
 
