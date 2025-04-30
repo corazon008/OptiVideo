@@ -34,7 +34,7 @@ class FfmpegHandler:
         @self.ffmpeg.on("progress")
         def on_progress(progress: Progress):
             self._progress = progress.time / self.video.duration * 100
-            self._elapsed_time = datetime.timedelta(seconds=int(progress.time))
+            self._elapsed_time = datetime.timedelta(seconds=int(progress.time.seconds))
             if self.speed <= 0 or (self.video.duration.seconds - progress.time.seconds) <= 0.1:
                 self._time_remaining = 0
             else:
