@@ -3,6 +3,9 @@ from threading import Thread
 
 from ffmpegProcess.FfmpegManager import FfmpegManager
 from video.VideosManager import VideosManager
+
+__VERSION__ = "1.0.2"
+
 app = Flask(__name__)
 
 def background_task(hash:str):
@@ -10,7 +13,7 @@ def background_task(hash:str):
 @app.route('/')
 def index():
     VideosManager.refreshDatabase()
-    return render_template("index.html", videos=VideosManager.videos.values())
+    return render_template("index.html", videos=VideosManager.videos.values(), version=__VERSION__)
 
 @app.route('/start/<hash>')
 def start_task(hash:str):
