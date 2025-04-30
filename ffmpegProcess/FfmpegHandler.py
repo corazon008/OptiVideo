@@ -1,4 +1,6 @@
 import datetime
+from datetime import timedelta
+
 from ffmpeg import FFmpeg, Progress
 
 from video.VideosManager import VideosManager
@@ -25,12 +27,14 @@ class FfmpegHandler:
 
         self.speed = -1
         self._progress: float = 0
+        self._elapsed_time: datetime.timedelta = datetime.timedelta(seconds=0)
         self._time_remaining: datetime.timedelta = datetime.timedelta(seconds=0)
         self._state: FfmpegState = FfmpegState.NOT_STARTED
 
         @self.ffmpeg.on("progress")
         def on_progress(progress: Progress):
             self._progress = progress.time / self.video.duration * 100
+            self._elapsed_time = datetime.timedelta(seconds=int(progress.time))
             if self.speed <= 0 or (self.video.duration.seconds - progress.time.seconds) <= 0.1:
                 self._time_remaining = 0
             else:
@@ -53,6 +57,8 @@ class FfmpegHandler:
     def getTimeRemaining(self) -> str | datetime.timedelta:
         if self.speed == 0:
             return "Error"
+        if self._time_remaining == 0:
+            return self._elapsed_time
         return self._time_remaining
 
 
