@@ -17,7 +17,7 @@ class FfmpegHandler:
             .output(
                 self.video.getOutputPath(),
                 {"codec:v": "libx265", "codec:a": "aac", "b:a": "128k"},
-                preset="veryfast",
+                preset="medium",
                 vf="scale=-2:480",
                 crf=25,
             )
