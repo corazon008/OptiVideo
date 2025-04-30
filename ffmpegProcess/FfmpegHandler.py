@@ -59,7 +59,7 @@ class FfmpegHandler:
         if self.speed == 0:
             return "Error"
         if self._time_remaining == 0:
-            return  datetime.timedelta(int(self.finished_time - self.started_time))
+            return  datetime.timedelta(seconds=int(self.finished_time - self.started_time))
         return self._time_remaining
 
 
